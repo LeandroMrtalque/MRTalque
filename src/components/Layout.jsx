@@ -1,9 +1,11 @@
 import { Outlet, NavLink, useNavigate } from "react-router-dom"
 import { supabase } from "../supabaseClient"
+import { IoHome } from "react-icons/io5"
+import { FaCalendarAlt } from "react-icons/fa"
 
 const navItems = [
-  { to: "/",             icon: "??", label: "Dashboard"        },
-  { to: "/cronograma",   icon: "??", label: "Cronograma"       },
+  { to: "/",             icon: <IoHome />, label: "Dashboard"        },
+  { to: "/cronograma",   icon: <FaCalendarAlt />, label: "Cronograma"       },
   { to: "/clientes",     icon: "??", label: "Lojas / Clientes" },
   { to: "/funcionarios", icon: "??", label: "Funcionarios"     },
 ]
@@ -20,8 +22,7 @@ export default function Layout() {
     <div style={{ display: "flex", minHeight: "100vh" }}>
       <aside className="sidebar">
         <div className="sidebar-logo">
-          <div className="sidebar-logo-icon">??</div>
-          <div className="sidebar-logo-text">MR <span>TALQUE</span></div>
+        //colocar a logo aqui.
         </div>
         <nav>
           <div className="nav-label">Principal</div>

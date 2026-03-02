@@ -26,7 +26,6 @@ export default function App() {
         <Route path="/" element={session ? <Layout /> : <Navigate to="/login" />}>
           <Route index element={<Dashboard />} />
           <Route path="cronograma" element={<Cronograma />} />
-          <Route path="operacao/nova" element={<Operacao />} />
           <Route path="operacao/:id" element={<Operacao />} />
           <Route path="clientes" element={<Clientes />} />
           <Route path="funcionarios" element={<Funcionarios />} />

@@ -30,13 +30,44 @@ export default function Operacao() {
     setLojas(lojasData || [])
     setFuncionarios(funcsData || [])
 
-    if (!isNova) {  // <-- essa verificação precisa estar aqui
+    if (!isNova && id) {
       const { data: op } = await supabase
         .from('operacoes')
-        .select('*, lojas(*)')
+        .select('*')
         .eq('id', id)
         .single()
-      // ...resto do código
+
+      if (op) {
+        setForm({
+          titulo: op.titulo || '',
+          tipo: op.tipo || 'Auditoria',
+          data: op.data || '',
+          hora_inicio: op.hora_inicio || '09:00',
+          hora_fim: op.hora_fim || '13:00',
+          status: op.status || 'Pendente',
+          loja_id: op.loja_id || '',
+          forma_deslocamento: op.forma_deslocamento || '',
+          observacoes: op.observacoes || ''
+        })
+
+        if (op.loja_id) {
+          const loja = lojasData?.find(x => x.id === op.loja_id)
+          if (loja) setLoja({
+            razao_social: loja.razao_social || '',
+            cnpj: loja.cnpj || '',
+            cidade: loja.cidade || '',
+            km_matriz: loja.km_matriz || '',
+            qtd_itens: loja.qtd_itens || '',
+            sistema: loja.sistema || ''
+          })
+        }
+
+        const { data: eqData } = await supabase
+          .from('operacao_funcionarios')
+          .select('funcionario_id')
+          .eq('operacao_id', id)
+        setEquipe(eqData?.map(e => e.funcionario_id) || [])
+      }
     }
   }
   carregar()
@@ -60,6 +91,7 @@ export default function Operacao() {
 
   async function salvar() {
     if (!form.titulo) return alert('Preencha o título da operação.')
+    if (!isNova && !id) return alert('Erro: ID da operação não encontrado.')
     setSaving(true)
 
     const payload = {
@@ -75,15 +107,19 @@ export default function Operacao() {
       if (error) { alert('Erro ao salvar: ' + error.message); setSaving(false); return }
       opId = data.id
     } else {
-      await supabase.from('operacoes').update(payload).eq('id', id)
+      const { error } = await supabase.from('operacoes').update(payload).eq('id', id)
+      if (error) { alert('Erro ao atualizar: ' + error.message); setSaving(false); return }
     }
 
     // Salvar equipe
-    await supabase.from('operacao_funcionarios').delete().eq('operacao_id', opId)
+    const { error: errorDelete } = await supabase.from('operacao_funcionarios').delete().eq('operacao_id', opId)
+    if (errorDelete) { alert('Erro ao remover equipe: ' + errorDelete.message); setSaving(false); return }
+
     if (equipe.length > 0) {
-      await supabase.from('operacao_funcionarios').insert(
+      const { error: errorInsert } = await supabase.from('operacao_funcionarios').insert(
         equipe.map(fid => ({ operacao_id: opId, funcionario_id: fid }))
       )
+      if (errorInsert) { alert('Erro ao adicionar equipe: ' + errorInsert.message); setSaving(false); return }
     }
 
     setSaving(false)
