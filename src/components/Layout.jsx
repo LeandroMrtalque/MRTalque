@@ -2,12 +2,14 @@ import { Outlet, NavLink, useNavigate } from "react-router-dom"
 import { supabase } from "../supabaseClient"
 import { IoHome } from "react-icons/io5"
 import { FaCalendarAlt } from "react-icons/fa"
+import { LiaStoreSolid } from "react-icons/lia"
+import { FaPeopleGroup } from "react-icons/fa6"
 
 const navItems = [
-  { to: "/",             icon: <IoHome />, label: "Dashboard"        },
-  { to: "/cronograma",   icon: <FaCalendarAlt />, label: "Cronograma"       },
-  { to: "/clientes",     icon: "??", label: "Lojas / Clientes" },
-  { to: "/funcionarios", icon: "??", label: "Funcionarios"     },
+  { to: "/",             icon: <IoHome size={16} />, label: "Dashboard"        },
+  { to: "/cronograma",   icon: <FaCalendarAlt size={16} />, label: "Cronograma"       },
+  { to: "/clientes",     icon: <LiaStoreSolid size={17} />, label: "Lojas / Clientes" },
+  { to: "/funcionarios", icon: <FaPeopleGroup size={17} />, label: "Funcionarios"     },
 ]
 
 export default function Layout() {
